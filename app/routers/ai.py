@@ -5,10 +5,10 @@ import os
 import numpy as np
 import logging
 
-# from app.ai.chatbot import Chatbot
-# from app.ai.rag_engine import RAGEngine
+from app.ai.chatbot import Chatbot
+from app.ai.rag_engine import RAGEngine
 # from app.ai.voice_processor import VoiceProcessor
-# from app.ai.multilingual import MultilingualTranslator
+import app.ai.multilingual as multilingual
 
 router = APIRouter(
     prefix="/api/ai",
@@ -16,10 +16,9 @@ router = APIRouter(
 )
 
 # Initialize AI Components
-# rag_engine = RAGEngine()
-# chatbot = Chatbot(rag_engine=rag_engine)
+rag_engine = RAGEngine()
+chatbot = Chatbot(rag_engine=rag_engine)
 # voice_processor = VoiceProcessor()
-# translator = MultilingualTranslator()
 
 # Load models and encoders lazily
 detector = None

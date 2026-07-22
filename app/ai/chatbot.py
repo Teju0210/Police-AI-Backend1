@@ -1,12 +1,10 @@
-from langchain.memory import ConversationBufferMemory
-from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
+from langchain_core.prompts import PromptTemplate
 from app.ai.rag_engine import RAGEngine
 
 class Chatbot:
     def __init__(self, rag_engine: RAGEngine):
         self.rag_engine = rag_engine
-        self.memory = ConversationBufferMemory(memory_key="chat_history", return_messages=False)
+        self.chat_history = ""
         self.prompt = PromptTemplate(
             input_variables=["chat_history", "context", "question"],
             template="""You are a helpful AI assistant.
@@ -20,11 +18,7 @@ Chat History: {chat_history}
 Question: {question}
 Answer:"""
         )
-        self.chain = LLMChain(
-            llm=self.rag_engine.llm,
-            prompt=self.prompt,
-            memory=self.memory
-        )
+        self.chain = self.prompt | self.rag_engine.llm
 
     def chat(self, user_input: str) -> str:
         # Retrieve context from RAGEngine
@@ -39,7 +33,11 @@ Answer:"""
         # Get response from LLM chain
         response = self.chain.invoke({
             "context": context,
+            "chat_history": self.chat_history,
             "question": user_input
         })
         
-        return response["text"]
+        # Update internal chat history
+        self.chat_history += f"User: {user_input}\nAssistant: {response.content}\n"
+        
+        return response.content
