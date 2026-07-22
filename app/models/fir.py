@@ -27,4 +27,5 @@ class FIR(Base):
 
     victims = relationship("Victim", back_populates="fir")
     accused = relationship("Accused", back_populates="fir")
+    evidence = relationship("Evidence", back_populates="fir")
     arrest_surrenders = relationship("ArrestSurrender", back_populates="fir")

@@ -50,18 +50,17 @@ def create_fir(
     }
 
 
-# GET ALL FIRS
 @router.get("/", response_model=list[FIRResponse])
 def get_all_firs(
+    skip: int = 0,
+    limit: int = 20,
     db: Session = Depends(get_db),
     current_user: dict = Depends(
-    require_role(["Admin", "Investigator", "Officer"])
-)
+        require_role(["Admin", "Investigator", "Officer"])
+    )
 ):
 
-    return db.query(FIR).all()
-
-
+    return db.query(FIR).offset(skip).limit(limit).all()
 # GET FIR BY ID
 @router.get("/{fir_id}", response_model=FIRResponse)
 def get_fir_by_id(

@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel
 
 
@@ -7,8 +8,8 @@ class AccusedCreate(BaseModel):
     age: int
     gender: str
     address: str
-    criminal_history: str
-    risk_score: float
+    criminal_history: Optional[str] = None
+    risk_score: Optional[float] = None
 
 
 class AccusedResponse(BaseModel):
@@ -18,8 +19,8 @@ class AccusedResponse(BaseModel):
     age: int
     gender: str
     address: str
-    criminal_history: str
-    risk_score: float
+    criminal_history: Optional[str] = None
+    risk_score: Optional[float] = None
 
     class Config:
         from_attributes = True

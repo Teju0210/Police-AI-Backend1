@@ -38,14 +38,16 @@ def create_accused(
         "id": new_accused.id
     }
 
-
-# GET ALL
 @router.get("/", response_model=list[AccusedResponse])
-def get_all_accused(
+def get_accused(
+    skip: int = 0,
+    limit: int = 20,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(require_role(["Admin", "Investigator", "Officer"]))
+    current_user: dict = Depends(
+        require_role(["Admin", "Investigator", "Officer"])
+    )
 ):
-    return db.query(Accused).all()
+    return db.query(Accused).offset(skip).limit(limit).all()
 
 
 # GET BY ID

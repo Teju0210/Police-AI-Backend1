@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship
 from app.database.database import Base
 
 
@@ -13,3 +14,5 @@ class Evidence(Base):
     description = Column(String)
     collected_by = Column(String)
     file_path = Column(String)
+
+    fir = relationship("FIR", back_populates="evidence")

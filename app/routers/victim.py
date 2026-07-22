@@ -40,12 +40,16 @@ def create_victim(
 
 # GET ALL VICTIMS
 @router.get("/", response_model=list[VictimResponse])
-def get_all_victims(
+def get_victims(
+    skip: int = 0,
+    limit: int = 20,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(require_role(["Admin", "Investigator", "Officer"]))
+    current_user: dict = Depends(
+        require_role(["Admin", "Investigator", "Officer"])
+    )
 ):
-    return db.query(Victim).all()
-
+    return db.query(Victim).offset(skip).limit(limit).all()
+    return db.query(Victim).offset(skip).limit(limit).all()
 
 # GET VICTIM BY ID
 @router.get("/{victim_id}", response_model=VictimResponse)
