@@ -7,7 +7,6 @@ from app.schemas.investigation_status import (
     InvestigationStatusCreate,
     InvestigationStatusResponse
 )
-from app.auth.dependencies import get_current_user
 from app.auth.role_checker import require_role
 
 router = APIRouter(
@@ -16,12 +15,12 @@ router = APIRouter(
 )
 
 
-
+# CREATE
 @router.post("/")
 def create_status(
     status: InvestigationStatusCreate,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(require_role(["Admin", "Investigator"]))
 ):
     new_status = InvestigationStatus(
         fir_id=status.fir_id,
@@ -40,20 +39,21 @@ def create_status(
     }
 
 
+# GET ALL
 @router.get("/", response_model=list[InvestigationStatusResponse])
 def get_all_status(
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(require_role(["Admin", "Investigator", "Officer"]))
 ):
     return db.query(InvestigationStatus).all()
 
 
-
+# GET BY ID
 @router.get("/{status_id}", response_model=InvestigationStatusResponse)
 def get_status_by_id(
     status_id: int,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(require_role(["Admin", "Investigator", "Officer"]))
 ):
     status = db.query(InvestigationStatus).filter(
         InvestigationStatus.id == status_id
@@ -65,13 +65,13 @@ def get_status_by_id(
     return status
 
 
-
+# UPDATE
 @router.put("/{status_id}")
 def update_status(
     status_id: int,
     updated_status: InvestigationStatusCreate,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(require_role(["Admin", "Investigator"]))
 ):
     status = db.query(InvestigationStatus).filter(
         InvestigationStatus.id == status_id
@@ -94,12 +94,12 @@ def update_status(
     }
 
 
-
+# DELETE
 @router.delete("/{status_id}")
 def delete_status(
     status_id: int,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(require_role(["Admin", "Investigator"]))
+    current_user: dict = Depends(require_role(["Admin"]))
 ):
     status = db.query(InvestigationStatus).filter(
         InvestigationStatus.id == status_id

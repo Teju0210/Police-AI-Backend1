@@ -4,28 +4,31 @@ from sqlalchemy.orm import Session
 from app.database.database import get_db
 from app.models.accused import Accused
 from app.schemas.accused import AccusedCreate, AccusedResponse
-from app.auth.dependencies import get_current_user
 from app.auth.role_checker import require_role
 
-router = APIRouter(prefix="/accused", tags=["Accused"])
+router = APIRouter(
+    prefix="/accused",
+    tags=["Accused"]
+)
 
 
-
+# CREATE
 @router.post("/")
 def create_accused(
     accused: AccusedCreate,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(require_role(["Admin", "Investigator"]))
 ):
 
     new_accused = Accused(
-        fir_id=accused.fir_id,
-        name=accused.name,
-        age=accused.age,
-        gender=accused.gender,
-        address=accused.address
-    )
-
+    fir_id=accused.fir_id,
+    name=accused.name,
+    age=accused.age,
+    gender=accused.gender,
+    address=accused.address,
+    criminal_history=accused.criminal_history,
+    risk_score=accused.risk_score
+)
     db.add(new_accused)
     db.commit()
     db.refresh(new_accused)
@@ -36,19 +39,21 @@ def create_accused(
     }
 
 
+# GET ALL
 @router.get("/", response_model=list[AccusedResponse])
 def get_all_accused(
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(require_role(["Admin", "Investigator", "Officer"]))
 ):
     return db.query(Accused).all()
 
 
+# GET BY ID
 @router.get("/{accused_id}", response_model=AccusedResponse)
 def get_accused_by_id(
     accused_id: int,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(require_role(["Admin", "Investigator", "Officer"]))
 ):
 
     accused = db.query(Accused).filter(Accused.id == accused_id).first()
@@ -59,12 +64,13 @@ def get_accused_by_id(
     return accused
 
 
+# UPDATE
 @router.put("/{accused_id}")
 def update_accused(
     accused_id: int,
     updated_accused: AccusedCreate,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(require_role(["Admin", "Investigator"]))
 ):
 
     accused = db.query(Accused).filter(Accused.id == accused_id).first()
@@ -77,6 +83,8 @@ def update_accused(
     accused.age = updated_accused.age
     accused.gender = updated_accused.gender
     accused.address = updated_accused.address
+    accused.criminal_history = updated_accused.criminal_history
+    accused.risk_score = updated_accused.risk_score
 
     db.commit()
     db.refresh(accused)
@@ -87,12 +95,12 @@ def update_accused(
     }
 
 
-
+# DELETE
 @router.delete("/{accused_id}")
 def delete_accused(
     accused_id: int,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(require_role(["Admin", "Investigator"]))
+    current_user: dict = Depends(require_role(["Admin"]))
 ):
 
     accused = db.query(Accused).filter(Accused.id == accused_id).first()

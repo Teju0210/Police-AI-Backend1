@@ -4,19 +4,22 @@ from sqlalchemy.orm import Session
 from app.database.database import get_db
 from app.models.evidence import Evidence
 from app.schemas.evidence import EvidenceCreate, EvidenceResponse
-
-from app.auth.dependencies import get_current_user
 from app.auth.role_checker import require_role
 
-router = APIRouter(prefix="/evidence", tags=["Evidence"])
+router = APIRouter(
+    prefix="/evidence",
+    tags=["Evidence"]
+)
 
 
+# CREATE
 @router.post("/")
 def create_evidence(
     evidence: EvidenceCreate,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(require_role(["Admin", "Investigator"]))
 ):
+
     new_evidence = Evidence(
         fir_id=evidence.fir_id,
         evidence_type=evidence.evidence_type,
@@ -35,20 +38,24 @@ def create_evidence(
     }
 
 
+# GET ALL
 @router.get("/", response_model=list[EvidenceResponse])
 def get_all_evidence(
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(require_role(["Admin", "Investigator", "Officer"]))
 ):
+
     return db.query(Evidence).all()
 
 
+# GET BY ID
 @router.get("/{evidence_id}", response_model=EvidenceResponse)
 def get_evidence_by_id(
     evidence_id: int,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(require_role(["Admin", "Investigator", "Officer"]))
 ):
+
     evidence = db.query(Evidence).filter(Evidence.id == evidence_id).first()
 
     if not evidence:
@@ -57,13 +64,15 @@ def get_evidence_by_id(
     return evidence
 
 
+# UPDATE
 @router.put("/{evidence_id}")
 def update_evidence(
     evidence_id: int,
     updated: EvidenceCreate,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(require_role(["Admin", "Investigator"]))
 ):
+
     evidence = db.query(Evidence).filter(Evidence.id == evidence_id).first()
 
     if not evidence:
@@ -84,12 +93,14 @@ def update_evidence(
     }
 
 
+# DELETE
 @router.delete("/{evidence_id}")
 def delete_evidence(
     evidence_id: int,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(require_role(["Admin", "Investigator"]))
+    current_user: dict = Depends(require_role(["Admin"]))
 ):
+
     evidence = db.query(Evidence).filter(Evidence.id == evidence_id).first()
 
     if not evidence:
