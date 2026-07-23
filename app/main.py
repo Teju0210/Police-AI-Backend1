@@ -73,4 +73,4 @@ def startup_event():
         rag_engine.ingest_text_files("data")
         logger.info("Successfully ingested case files into RAG memory!")
     except Exception as e:
-        logger.error(f"Failed to ingest files for RAG: {e}")
+        logger.error(f"Failed to ingest RAG documents: {e}")

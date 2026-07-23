@@ -43,6 +43,7 @@ export default function Chat() {
 
   const [input,setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [isListening, setIsListening] = useState(false);
 
   const chatEnd = useRef(null);
 
@@ -73,16 +74,29 @@ export default function Chat() {
     setIsTyping(true);
 
     try {
-      const res = await api.post("/ai/chat", { message: input });
-      
-      setMessages(prev=>[
-        ...prev,
-        {
-          sender:"ai",
-          text: res.data.response,
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }
-      ]);
+      if (input.startsWith("/fir ")) {
+        const summary = input.replace("/fir ", "");
+        const res = await api.post("/ai/draft_fir", { raw_summary: summary });
+        setMessages(prev=>[
+          ...prev,
+          {
+            sender:"ai",
+            text: res.data.response,
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          }
+        ]);
+      } else {
+        const res = await api.post("/ai/chat", { message: input });
+        
+        setMessages(prev=>[
+          ...prev,
+          {
+            sender:"ai",
+            text: res.data.response,
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          }
+        ]);
+      }
     } catch (error) {
       console.error("Chat Error:", error);
       setMessages(prev=>[
@@ -101,6 +115,39 @@ export default function Chat() {
 
 
 
+  const startListening = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Your browser does not support Speech Recognition.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = "en-US";
+
+    recognition.onstart = () => {
+      setIsListening(true);
+    };
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setInput(prev => (prev + " " + transcript).trim());
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.start();
+  };
+
   const suggestions=[
 
     "Show recent crime trends",
@@ -109,7 +156,9 @@ export default function Chat() {
 
     "Analyze FIR report",
 
-    "Predict crime hotspots"
+    "Predict crime hotspots",
+
+    "/fir "
 
   ];
 
@@ -282,7 +331,9 @@ export default function Chat() {
 
                 variant="outline"
 
-                className="border-slate-700"
+                className={`border-slate-700 ${isListening ? "bg-red-500 text-white hover:bg-red-600 animate-pulse" : ""}`}
+
+                onClick={startListening}
 
               >
 

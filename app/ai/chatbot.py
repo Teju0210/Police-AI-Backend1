@@ -1,4 +1,5 @@
 from langchain_core.prompts import PromptTemplate
+from langchain_core.output_parsers import StrOutputParser
 from app.ai.rag_engine import RAGEngine
 
 class Chatbot:
@@ -8,6 +9,7 @@ class Chatbot:
         self.prompt = PromptTemplate(
             input_variables=["chat_history", "context", "question"],
             template="""You are a helpful AI assistant.
+You must respond in the language the user asks the question in (e.g. Kannada, Hindi, or English).
 Use the following pieces of context to answer the user's question.
 If you don't know the answer, just say that you don't know, don't try to make up an answer.
 
@@ -18,7 +20,7 @@ Chat History: {chat_history}
 Question: {question}
 Answer:"""
         )
-        self.chain = self.prompt | self.rag_engine.llm
+        self.chain = self.prompt | self.rag_engine.llm | StrOutputParser()
 
     def chat(self, user_input: str) -> str:
         # Retrieve context from RAGEngine
@@ -38,6 +40,6 @@ Answer:"""
         })
         
         # Update internal chat history
-        self.chat_history += f"User: {user_input}\nAssistant: {response.content}\n"
+        self.chat_history += f"User: {user_input}\nAssistant: {response}\n"
         
-        return response.content
+        return response

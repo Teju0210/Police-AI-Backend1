@@ -15,13 +15,13 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 class RAGEngine:
     def __init__(self):
         self.llm = ChatGoogleGenerativeAI(
-            model="gemini-2.5-flash",
+            model="gemini-3.1-flash-lite",
             google_api_key=GEMINI_API_KEY,
             temperature=0.3
         )
 
         self.embeddings = GoogleGenerativeAIEmbeddings(
-            model="models/gemini-embedding-2",
+            model="models/gemini-embedding-001",
             google_api_key=GEMINI_API_KEY
         )
 
@@ -48,8 +48,13 @@ class RAGEngine:
         return self.vector_store
 
     def retrieve_context(self, query: str):
-        if not self.retriever:
-            raise ValueError("Vector store not initialized. Call ingest_text_files first.")
-        
-        docs = self.retriever.invoke(query)
-        return docs
+        if self.vector_store is None:
+            try:
+                with open(self.data_path, "r", encoding="utf-8") as f:
+                    content = f.read()
+                from langchain_core.documents import Document
+                return [Document(page_content=content)]
+            except Exception:
+                return []
+                
+        return self.vector_store.similarity_search(query, k=3)

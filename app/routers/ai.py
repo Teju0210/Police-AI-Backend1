@@ -40,6 +40,9 @@ def load_models():
 class ChatRequest(BaseModel):
     message: str
 
+class FIRRequest(BaseModel):
+    raw_summary: str
+
 class PredictRequest(BaseModel):
     latitude: float
     longitude: float
@@ -54,6 +57,15 @@ def chat(request: ChatRequest):
     try:
         response = chatbot.chat(request.message)
         return {"response": response}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/draft_fir")
+def draft_fir(request: FIRRequest):
+    try:
+        prompt = f"Convert the following raw summary into a professional legal FIR (First Information Report) draft. Structure it properly with necessary legal headings and formal language.\n\nSummary:\n{request.raw_summary}"
+        response = rag_engine.llm.invoke(prompt)
+        return {"response": str(response.content)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
