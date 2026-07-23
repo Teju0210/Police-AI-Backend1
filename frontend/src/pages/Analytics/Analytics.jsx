@@ -10,8 +10,8 @@ export default function Analytics() {
     Year: new Date().getFullYear(),
     Month: new Date().getMonth() + 1,
     AgeYear: "",
-    GenderID: 1, // 1 for Male, 2 for Female
-    CrimeHead: 1, // Category ID
+    GenderID: "M", 
+    CrimeHead: "Crimes Against Property", 
   });
 
   const [loading, setLoading] = useState(false);
@@ -31,7 +31,17 @@ export default function Analytics() {
     setResult(null);
 
     try {
-      const res = await api.post("/ai/predict_risk", formData);
+      const payload = {
+        latitude: Number(formData.Latitude),
+        longitude: Number(formData.Longitude),
+        Year: Number(formData.Year),
+        Month: Number(formData.Month),
+        AgeYear: Number(formData.AgeYear),
+        GenderID: String(formData.GenderID),
+        CrimeHead: String(formData.CrimeHead)
+      };
+      
+      const res = await api.post("/ai/predict_risk", payload);
       setResult(res.data);
     } catch (error) {
       console.error("Prediction Error:", error);
@@ -158,8 +168,8 @@ export default function Analytics() {
                   onChange={handleChange}
                   className="w-full rounded-xl border border-slate-700 bg-slate-800 p-3 text-white outline-none focus:border-cyan-500"
                 >
-                  <option value={1}>Male</option>
-                  <option value={2}>Female</option>
+                  <option value="M">Male</option>
+                  <option value="F">Female</option>
                 </select>
               </div>
             </div>
@@ -167,7 +177,7 @@ export default function Analytics() {
             {/* Crime Category */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-400 flex items-center gap-2">
-                <FileText size={16} /> Crime Category ID
+                <FileText size={16} /> Crime Category
               </label>
               <select
                 name="CrimeHead"
@@ -175,10 +185,10 @@ export default function Analytics() {
                 onChange={handleChange}
                 className="w-full rounded-xl border border-slate-700 bg-slate-800 p-3 text-white outline-none focus:border-cyan-500"
               >
-                <option value={1}>Robbery</option>
-                <option value={2}>Cyber Crime</option>
-                <option value={3}>Assault</option>
-                <option value={4}>Theft</option>
+                <option value="Crimes Against Property">Robbery / Property</option>
+                <option value="Cyber Crime">Cyber Crime</option>
+                <option value="Crimes Against Body">Assault / Body</option>
+                <option value="Economic Offences">Economic Offences</option>
               </select>
             </div>
 

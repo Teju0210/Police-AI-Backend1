@@ -27,10 +27,20 @@ from app.routers.police_station import router as police_station_router
 from app.routers.investigation_status import router as investigation_status_router
 from app.routers.crime_type import router as crime_type_router
 from app.routers.ai import router as ai_router
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI(
     title="Police AI Crime Intelligence Platform",
     description="AI-powered Crime Database and Investigation System",
     version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 Base.metadata.create_all(bind=engine)
