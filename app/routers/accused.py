@@ -1,0 +1,118 @@
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+
+from app.database.database import get_db
+from app.models.accused import Accused
+from app.schemas.accused import AccusedCreate, AccusedResponse
+from app.auth.role_checker import require_role
+
+router = APIRouter(
+    prefix="/accused",
+    tags=["Accused"]
+)
+
+
+# CREATE
+@router.post("/")
+def create_accused(
+    accused: AccusedCreate,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(require_role(["Admin", "Investigator"]))
+):
+
+    new_accused = Accused(
+    fir_id=accused.fir_id,
+    name=accused.name,
+    age=accused.age,
+    gender=accused.gender,
+    address=accused.address,
+    criminal_history=accused.criminal_history,
+    risk_score=accused.risk_score
+)
+    db.add(new_accused)
+    db.commit()
+    db.refresh(new_accused)
+
+    return {
+        "message": "Accused Created Successfully",
+        "id": new_accused.id
+    }
+
+@router.get("/", response_model=list[AccusedResponse])
+def get_accused(
+    skip: int = 0,
+    limit: int = 20,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(
+        require_role(["Admin", "Investigator", "Officer"])
+    )
+):
+    return db.query(Accused).offset(skip).limit(limit).all()
+
+
+# GET BY ID
+@router.get("/{accused_id}", response_model=AccusedResponse)
+def get_accused_by_id(
+    accused_id: int,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(require_role(["Admin", "Investigator", "Officer"]))
+):
+
+    accused = db.query(Accused).filter(Accused.id == accused_id).first()
+
+    if not accused:
+        raise HTTPException(status_code=404, detail="Accused Not Found")
+
+    return accused
+
+
+# UPDATE
+@router.put("/{accused_id}")
+def update_accused(
+    accused_id: int,
+    updated_accused: AccusedCreate,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(require_role(["Admin", "Investigator"]))
+):
+
+    accused = db.query(Accused).filter(Accused.id == accused_id).first()
+
+    if not accused:
+        raise HTTPException(status_code=404, detail="Accused Not Found")
+
+    accused.fir_id = updated_accused.fir_id
+    accused.name = updated_accused.name
+    accused.age = updated_accused.age
+    accused.gender = updated_accused.gender
+    accused.address = updated_accused.address
+    accused.criminal_history = updated_accused.criminal_history
+    accused.risk_score = updated_accused.risk_score
+
+    db.commit()
+    db.refresh(accused)
+
+    return {
+        "message": "Accused Updated Successfully",
+        "accused": accused
+    }
+
+
+# DELETE
+@router.delete("/{accused_id}")
+def delete_accused(
+    accused_id: int,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(require_role(["Admin"]))
+):
+
+    accused = db.query(Accused).filter(Accused.id == accused_id).first()
+
+    if not accused:
+        raise HTTPException(status_code=404, detail="Accused Not Found")
+
+    db.delete(accused)
+    db.commit()
+
+    return {
+        "message": "Accused Deleted Successfully"
+    }

@@ -1,77 +1,433 @@
-# KSP Crime Analytics Dashboard — Local Setup (VS Code)
+# 🚔 Police AI Crime Intelligence Platform
 
-## What's in this build
-This build was upgraded to meet the SCRB "Advanced Visualization / Network Analysis / AI-Driven Predictive Dashboard" brief in full:
+An AI-powered Crime Intelligence Platform designed for **Karnataka State Police (KSP)** to assist law enforcement with crime record management, advanced analytics, geospatial visualization, criminal network analysis, and AI-driven predictive policing.
 
-| Requirement | Where it lives |
-|---|---|
-| District-level drill-down (district → police station) | Map panel, section **01 · Geo Drill-down** — click any circle marker |
-| Spatiotemporal clusters (time-of-day layered hotspots) | Heatmap panel, section **01** — Morning/Afternoon/Evening/Night toggle |
-| Emerging trend alerts (red pulsing markers) | Pulsing red rings on the map for any district in the early-warning list |
-| Relationship mapping / repeat-offender network | Section **05 · Network & Risk** — force-directed co-accused graph |
-| Modus Operandi + cross-jurisdiction association detection | Section **06 · MO & Behaviour** — MO frequency + multi-district repeat-offender table |
-| Socio-economic correlation ("why behind the where") | Section **07 · Socio-Economic** — crime rate vs urbanization/literacy/unemployment, with Pearson r |
-| AI-driven predictive risk scoring | Section **08 · AI Forecast** — `RandomForestRegressor` forecasts next-period case volume per district, tiered High/Medium/Low |
-| Anomaly detection | Section **09 · Anomalies** — `IsolationForest` flags individual incidents that deviate from normal district/crime-type/time patterns |
-| Pattern & trend discovery (stats-based hotspots) | Sections 01, 02, 08 combined (heatmap + trend charts + forecast) |
+The platform combines a **FastAPI backend** with an **interactive Crime Analytics Dashboard**, enabling police departments to manage crime records efficiently while gaining actionable intelligence through data visualization and machine learning.
 
-Cinematic/interactive layer: animated boot sequence, count-up KPIs, scroll-reveal sections, pulsing hotspot markers, hover-glow panels, and a sticky in-page nav across all 10 sections.
+---
 
+# 📌 Project Overview
 
-## Project structure
+The Police AI Crime Intelligence Platform consists of two major components:
+
+## 🔹 Backend System
+A secure REST API built with **FastAPI**, providing authentication, role-based authorization, and CRUD operations for managing crime-related data.
+
+## 🔹 Crime Analytics Dashboard
+A Python-powered analytics engine that transforms crime datasets into interactive dashboards featuring:
+
+- District-wise crime analysis
+- Crime hotspot maps
+- Criminal relationship networks
+- Modus Operandi analysis
+- AI-based crime prediction
+- Anomaly detection
+- Early warning alerts
+
+---
+
+# 🚀 Key Features
+
+## 🔐 Backend
+
+- JWT Authentication
+- Role-Based Authorization
+- User Management
+- FIR Management
+- Victim Management
+- Accused Management
+- Evidence Management
+- Police Station Management
+- Crime Type Management
+- Investigation Status Management
+- PostgreSQL Integration
+- SQLAlchemy ORM
+- Interactive Swagger Documentation
+
+---
+
+## 📊 Crime Analytics Dashboard
+
+### 🌍 District-Level Drill-down
+
+- Interactive district map
+- Police station drill-down
+- District-wise crime statistics
+
+---
+
+### 🔥 Crime Hotspots
+
+- Geospatial hotspot visualization
+- Heatmap of crime concentration
+- District incident density
+
+---
+
+### ⏰ Spatiotemporal Analysis
+
+Layer crime data based on:
+
+- Morning
+- Afternoon
+- Evening
+- Night
+
+to identify crime clusters by time.
+
+---
+
+### 👥 Criminal Relationship Network
+
+Interactive graph showing:
+
+- Repeat offenders
+- Co-accused relationships
+- Criminal network visualization
+- Risk scoring
+
+---
+
+### 🕵️ Modus Operandi Analysis
+
+Analyze
+
+- Crime methods
+- Cross-jurisdiction offenders
+- Repeat criminal behaviour
+
+---
+
+### 📈 Crime Trend Analysis
+
+Interactive charts for
+
+- Monthly trends
+- Seasonal trends
+- Year-wise crime comparison
+
+---
+
+### 🏘 Socio-Economic Correlation
+
+Correlate crime with
+
+- Literacy
+- Urbanization
+- Population
+- Unemployment
+
+using Pearson correlation.
+
+---
+
+### 🤖 AI Predictive Analytics
+
+Machine Learning powered:
+
+- Crime Forecasting
+- District Risk Prediction
+- High / Medium / Low Risk Classification
+
+using Random Forest Regression.
+
+---
+
+### 🚨 Anomaly Detection
+
+Isolation Forest detects unusual crime incidents that differ from normal crime patterns.
+
+---
+
+### ⚠ Early Warning System
+
+Automatically identifies districts showing rapidly increasing crime trends.
+
+---
+
+# 🛠 Technology Stack
+
+## Backend
+
+- FastAPI
+- Python
+- PostgreSQL
+- SQLAlchemy
+- Pydantic
+- JWT Authentication
+- Passlib
+- Uvicorn
+
+---
+
+## Analytics
+
+- Python
+- Pandas
+- NumPy
+- Plotly
+- Leaflet.js
+- NetworkX
+- Scikit-learn
+- Random Forest
+- Isolation Forest
+
+---
+
+## Frontend Dashboard
+
+- HTML5
+- CSS3
+- JavaScript
+- Plotly.js
+- Leaflet Maps
+- Vis Network
+
+---
+
+# 📁 Project Structure
+
 ```
-ksp_analytics/
-├── 1_generate_data.py       # synthetic data generator (swap for real DB pull later)
-├── 2_build_analytics.py     # pandas + NetworkX analysis -> output/dashboard_data.json
-├── 3_build_dashboard.py     # injects the JSON into the HTML template
-├── dashboard_template.html  # editable dashboard source (charts, layout, styling)
+Police-AI-Backend/
+
+│
+├── app/
+│   ├── auth/
+│   ├── database/
+│   ├── models/
+│   ├── routers/
+│   ├── schemas/
+│   └── main.py
+│
+├── ksp_analytics/
+│   ├── 1_generate_data.py
+│   ├── 2_build_analytics.py
+│   ├── 3_build_dashboard.py
+│
+├── dashboard_template.html
+│
+├── data/
+│   ├── CaseMaster.csv
+│   ├── Victim.csv
+│   ├── Accused.csv
+│   ├── ArrestSurrender.csv
+│   └── DistrictProfile.csv
+│
+├── output/
+│   ├── dashboard.html
+│   └── dashboard_data.json
+│
 ├── requirements.txt
-├── data/                    # generated CSVs land here
-└── output/                  # dashboard_data.json + final dashboard.html land here
+├── README.md
+└── .env
 ```
 
-## 1. Install prerequisites
-- **Python 3.9+** — check with `python3 --version`. Get it from python.org if missing.
-- **VS Code** — install the **Python** extension (Microsoft) from the Extensions panel (`Ctrl+Shift+X` / `Cmd+Shift+X`).
-- Optional but handy: the **Live Server** extension (Ritwick Dey) for auto-reloading the HTML as you edit it.
+---
 
-## 2. Open the project
-```
-code ksp_analytics
-```
-(or File → Open Folder… in VS Code)
+# ⚙ Installation
 
-## 3. Create a virtual environment
-Open a terminal in VS Code (`` Ctrl+` ``) and run:
+## Clone Repository
+
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
+git clone https://github.com/Teju0210/Police-AI-Backend1.git
+```
+
+---
+
+## Navigate to Project
+
+```bash
+cd Police-AI-Backend1
+```
+
+---
+
+## Create Virtual Environment
+
+### Windows
+
+```bash
+python -m venv venv
+
+venv\Scripts\activate
+```
+
+### Linux / Mac
+
+```bash
+python3 -m venv venv
+
+source venv/bin/activate
+```
+
+---
+
+## Install Dependencies
+
+```bash
 pip install -r requirements.txt
 ```
-VS Code should prompt "Select Interpreter" — pick the `.venv` one so it's used for every terminal/run going forward.
 
-## 4. Run the pipeline
+---
+
+# ▶ Running Backend
+
 ```bash
-python 1_generate_data.py      # writes data/*.csv
-python 2_build_analytics.py    # writes output/dashboard_data.json
-python 3_build_dashboard.py    # writes output/dashboard.html
+uvicorn app.main:app --reload
 ```
-Or just click the ▶ Run button at the top-right of each file in VS Code (uses the same interpreter).
 
-## 5. View the dashboard
-- Simplest: right-click `output/dashboard.html` in the VS Code file explorer → **Reveal in File Explorer/Finder** → double-click to open in your browser.
-- Nicer for iterating: right-click the file → **Open with Live Server**. It'll auto-refresh in the browser every time you re-run step 3.
+Server:
 
-Requires an internet connection in the *browser* (not in Python) — the dashboard loads Plotly/Leaflet/vis-network from CDNs at view time.
+```
+http://127.0.0.1:8000
+```
 
-## 6. Connecting real data later
-Replace the contents of `1_generate_data.py` with a real DB pull (e.g. `pyodbc`/`sqlalchemy` against SQL Server) that produces the same four CSVs with the same column names:
-- `data/CaseMaster.csv`
-- `data/Victim.csv`
-- `data/Accused.csv`
-- `data/ArrestSurrender.csv`
+---
 
-`2_build_analytics.py` and `3_build_dashboard.py` don't need to change — they only care about those column names, not where the CSVs came from.
+# 📖 API Documentation
 
-## 7. Editing the look/layout
-All HTML/CSS/JS lives in `dashboard_template.html` (not the generated `output/dashboard.html` — that one gets overwritten every time you run step 3). Edit the template, re-run `3_build_dashboard.py`, refresh the browser.
+Swagger
+
+```
+http://127.0.0.1:8000/docs
+```
+
+ReDoc
+
+```
+http://127.0.0.1:8000/redoc
+```
+
+---
+
+# ▶ Running Crime Analytics Dashboard
+
+Generate datasets
+
+```bash
+python ksp_analytics/1_generate_data.py
+```
+
+Build analytics
+
+```bash
+python ksp_analytics/2_build_analytics.py
+```
+
+Generate dashboard
+
+```bash
+python ksp_analytics/3_build_dashboard.py
+```
+
+Open
+
+```
+output/dashboard.html
+```
+
+using your browser or VS Code Live Server.
+
+---
+
+# 📊 Dashboard Capabilities
+
+✔ Interactive KPI Cards
+
+✔ District Drill-down
+
+✔ Crime Hotspots
+
+✔ Incident Density Heatmap
+
+✔ Crime Timeline
+
+✔ Crime Type Distribution
+
+✔ Victim Demographics
+
+✔ Criminal Network Analysis
+
+✔ Repeat Offenders
+
+✔ Risk Scoring
+
+✔ Modus Operandi Analysis
+
+✔ Cross-Jurisdiction Behaviour
+
+✔ Socio-Economic Correlation
+
+✔ AI Crime Forecasting
+
+✔ Isolation Forest Anomaly Detection
+
+✔ Early Warning Alerts
+
+---
+
+# 🔒 Authentication
+
+The backend uses JWT Bearer Authentication.
+
+Login to obtain an access token and authorize requests using
+
+```
+Bearer <access_token>
+```
+
+---
+
+# 🗄 Database
+
+Database
+
+- PostgreSQL
+
+ORM
+
+- SQLAlchemy
+
+---
+
+# 🔮 Future Enhancements
+
+- Conversational AI Assistant
+- RAG-based Crime Search
+- Voice Assistant
+- Kannada ↔ English Translation
+- Face Recognition
+- Criminal Profile Generation
+- Live CCTV Analytics
+- Predictive Policing
+- GIS Crime Mapping
+- Mobile Officer Application
+
+---
+
+# 👨‍💻 Team
+
+Developed as part of the **Police AI Crime Intelligence Platform** for advanced crime analytics and digital policing.
+
+Backend:
+- FastAPI
+- PostgreSQL
+- SQLAlchemy
+- JWT Authentication
+
+Analytics:
+- Python
+- Plotly
+- Machine Learning
+- Network Analysis
+- Geospatial Intelligence
+
+---
+
+# 📜 License
+
+This project is intended for educational, research, and police innovation purposes.
+
+---
+
+## ⭐ If you found this project useful, consider giving it a Star!
