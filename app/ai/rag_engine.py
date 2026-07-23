@@ -21,7 +21,7 @@ class RAGEngine:
         )
 
         self.embeddings = GoogleGenerativeAIEmbeddings(
-            model="models/embedding-001",
+            model="models/gemini-embedding-2",
             google_api_key=GEMINI_API_KEY
         )
 

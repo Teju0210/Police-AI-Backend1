@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
 
 import {
   Bot,
@@ -194,9 +195,9 @@ export default function Chat() {
 
                   >
 
-                    <p>
-                      {msg.text}
-                    </p>
+                    <div className="text-sm">
+                      <ReactMarkdown>{msg.text}</ReactMarkdown>
+                    </div>
 
                     <p className="text-xs opacity-60 mt-2">
                       {msg.time}

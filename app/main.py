@@ -61,3 +61,16 @@ def home():
     return {
         "message": "Police AI Backend is Running Successfully"
     }
+
+from app.routers.ai import rag_engine
+import logging
+
+@app.on_event("startup")
+def startup_event():
+    logger = logging.getLogger(__name__)
+    logger.info("Ingesting text files into RAG FAISS Vector Store...")
+    try:
+        rag_engine.ingest_text_files("data")
+        logger.info("Successfully ingested case files into RAG memory!")
+    except Exception as e:
+        logger.error(f"Failed to ingest files for RAG: {e}")

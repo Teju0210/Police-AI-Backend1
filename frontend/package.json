@@ -27,6 +27,7 @@
     "react-countup": "^6.5.3",
     "react-dom": "^19.2.7",
     "react-leaflet": "^5.0.0",
+    "react-markdown": "^10.1.0",
     "react-parallax-tilt": "^1.7.333",
     "react-router-dom": "^7.18.1",
     "reactflow": "^11.11.4",
