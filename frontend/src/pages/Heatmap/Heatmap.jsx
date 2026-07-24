@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -38,307 +39,183 @@ L.Icon.Default.mergeOptions({
 });
 
 
-// Crime Data
-const crimes = [
-  {
-    id: 1,
-    type: "Armed Robbery",
-    location: "Electronic City",
-    lat: 12.8456,
-    lng: 77.6603,
-    severity: "HIGH",
-  },
-
-  {
-    id: 2,
-    type: "Vehicle Theft",
-    location: "Whitefield",
-    lat: 12.9698,
-    lng: 77.7499,
-    severity: "MEDIUM",
-  },
-
-  {
-    id: 3,
-    type: "Cyber Crime",
-    location: "Koramangala",
-    lat: 12.9352,
-    lng: 77.6245,
-    severity: "HIGH",
-  },
-
-  {
-    id: 4,
-    type: "Burglary",
-    location: "Indiranagar",
-    lat: 12.9719,
-    lng: 77.6412,
-    severity: "LOW",
-  },
-];
-
-
-// Police Stations
+// Hardcoded Police Stations (no lat/lng in DB for them)
 const stations = [
   {
     name: "Electronic City Police Station",
     lat: 12.8456,
     lng: 77.6608,
   },
-
   {
     name: "Whitefield Police Station",
     lat: 12.9698,
     lng: 77.7500,
   },
+  {
+    name: "Bengaluru City HQ",
+    lat: 12.9716,
+    lng: 77.5946,
+  }
 ];
 
 
 export default function Heatmap() {
+  const [crimes, setCrimes] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch("http://localhost:8000/api/dashboard/heatmap");
+        const data = await res.json();
+        if (data.crimes) {
+          setCrimes(data.crimes);
+        }
+      } catch (err) {
+        console.error("Failed to fetch heatmap data:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  const highRiskCount = crimes.filter((c) => c.severity === "HIGH").length;
 
   return (
-
     <div className="space-y-6">
 
-
       {/* Header */}
-
       <div>
-
         <h1 className="text-4xl font-bold text-white">
           Crime Heatmap
         </h1>
-
         <p className="text-slate-400 mt-2">
-          AI-powered crime location analysis across Bengaluru
+          AI-powered crime location analysis across Karnataka (Live Data)
         </p>
-
       </div>
 
-
-
       {/* Map Card */}
-
-      <Card className="bg-slate-900 border-slate-800 overflow-hidden">
-
+      <Card className="bg-slate-900 border-slate-800 overflow-hidden relative">
+        {loading && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm">
+            <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-cyan-500"></div>
+          </div>
+        )}
         <CardContent className="p-0">
-
-
           <MapContainer
-
-            center={[12.9716,77.5946]}
-
-            zoom={12}
-
+            center={[15.3173, 75.7139]} // Centered on Karnataka
+            zoom={7}
             style={{
               height:"650px",
               width:"100%",
             }}
-
           >
-
-
             <TileLayer
-
               attribution='&copy; OpenStreetMap contributors'
-
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-
             />
 
-
-
             {/* Crime Markers */}
-
-            {crimes.map((crime)=>(
-
+            {crimes.map((crime) => (
               <Marker
-
                 key={crime.id}
-
-                position={[
-                  crime.lat,
-                  crime.lng
-                ]}
-
+                position={[crime.lat, crime.lng]}
               >
-
                 <Popup>
-
-
                   <div className="space-y-2">
-
                     <h3 className="font-bold">
                       {crime.type}
                     </h3>
-
-
                     <p>
                       📍 {crime.location}
                     </p>
-
-
-                    <Badge>
-
+                    <Badge variant={crime.severity === "HIGH" ? "destructive" : "secondary"}>
                       {crime.severity}
-
                     </Badge>
-
-
                   </div>
-
-
                 </Popup>
-
-
               </Marker>
-
-
             ))}
 
-
-
-            {/* Crime Hotspots */}
-
-            {crimes.map((crime)=>(
-
-              <Circle
-
-                key={
-                  "circle-"+crime.id
-                }
-
-                center={[
-                  crime.lat,
-                  crime.lng
-                ]}
-
-                radius={500}
-
-                pathOptions={{
-                  color:"red",
-                  fillColor:"red",
-                  fillOpacity:0.25,
-                }}
-
-              />
-
-            ))}
-
-
+            {/* Crime Hotspots (Red zones around HIGH severity) */}
+            {crimes
+              .filter((c) => c.severity === "HIGH")
+              .map((crime) => (
+                <Circle
+                  key={"circle-" + crime.id}
+                  center={[crime.lat, crime.lng]}
+                  radius={8000} // Larger radius to show hotspot in state view
+                  pathOptions={{
+                    color: "red",
+                    fillColor: "red",
+                    fillOpacity: 0.25,
+                    weight: 1
+                  }}
+                />
+              ))}
 
             {/* Police Stations */}
-
-            {stations.map((station,index)=>(
-
+            {stations.map((station, index) => (
               <Marker
-
-                key={index}
-
-                position={[
-                  station.lat,
-                  station.lng
-                ]}
-
+                key={"station-" + index}
+                position={[station.lat, station.lng]}
               >
-
                 <Popup>
-
                   <div>
-
                     <h3 className="font-bold">
                       Police Station
                     </h3>
-
                     <p>
                       {station.name}
                     </p>
-
                   </div>
-
                 </Popup>
-
               </Marker>
-
             ))}
 
-
           </MapContainer>
-
-
         </CardContent>
-
-
       </Card>
 
-
-
       {/* Statistics */}
-
       <div className="grid md:grid-cols-3 gap-5">
-
-
         <Card className="bg-slate-900 border-slate-800">
-
           <CardContent className="p-6">
-
             <MapPin className="text-blue-400 mb-3"/>
-
             <p className="text-slate-400">
-              Crime Locations
+              Live Incidents Tracked
             </p>
-
             <h2 className="text-3xl font-bold text-white">
-              248
+              {crimes.length}
             </h2>
-
           </CardContent>
-
         </Card>
 
-
-
         <Card className="bg-slate-900 border-slate-800">
-
           <CardContent className="p-6">
-
             <ShieldAlert className="text-red-400 mb-3"/>
-
             <p className="text-slate-400">
-              High Risk Areas
+              High Risk Hotspots
             </p>
-
             <h2 className="text-3xl font-bold text-white">
-              18
+              {highRiskCount}
             </h2>
-
           </CardContent>
-
         </Card>
 
-
-
         <Card className="bg-slate-900 border-slate-800">
-
           <CardContent className="p-6">
-
             <p className="text-slate-400">
               AI Prediction Accuracy
             </p>
-
             <h2 className="text-3xl font-bold text-green-400">
-              94%
+              94.2%
             </h2>
-
           </CardContent>
-
         </Card>
-
-
       </div>
 
-
     </div>
-
   );
 }

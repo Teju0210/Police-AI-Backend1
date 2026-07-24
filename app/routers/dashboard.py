@@ -116,3 +116,32 @@ def get_crime_category(db: Session = Depends(get_db)):
         ]
         
     return {"crimeCategory": result}
+
+@router.get("/heatmap")
+def get_heatmap_data(db: Session = Depends(get_db)):
+    # Get recent/high gravity crimes with valid lat/lng
+    crimes = db.query(FIR).filter(
+        FIR.latitude != None,
+        FIR.longitude != None,
+        FIR.latitude != 0.0,
+        FIR.longitude != 0.0
+    ).limit(300).all()
+    
+    result = []
+    for c in crimes:
+        severity = "MEDIUM"
+        if c.gravity_offence and "heinous" in c.gravity_offence.lower():
+            severity = "HIGH"
+        elif c.gravity_offence and "non" in c.gravity_offence.lower():
+            severity = "LOW"
+            
+        result.append({
+            "id": c.id,
+            "type": c.case_category or "Unknown",
+            "location": c.location or "Unknown",
+            "lat": c.latitude,
+            "lng": c.longitude,
+            "severity": severity
+        })
+        
+    return {"crimes": result}
