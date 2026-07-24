@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
+import { motion } from "framer-motion";
+import ErrorBoundary from "@/components/common/ErrorBoundary";
 
 import {
   Bot,
@@ -171,9 +173,9 @@ export default function Chat() {
 
       <div>
 
-        <h1 className="text-4xl font-bold text-white flex items-center gap-3">
+        <h1 className="text-4xl font-bold flex items-center gap-3 bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
 
-          <Bot className="text-blue-500"/>
+          <Bot className="text-blue-500" size={36} />
 
           CrimeVision AI Assistant
 
@@ -205,9 +207,13 @@ export default function Chat() {
               {messages.map((msg,index)=>(
 
 
-                <div
+                <motion.div
 
                   key={index}
+
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
 
                   className={`flex gap-3 ${
                     msg.sender==="user"
@@ -220,7 +226,7 @@ export default function Chat() {
 
                   {msg.sender==="ai" && (
 
-                    <div className="bg-blue-600 p-3 rounded-full h-fit">
+                    <div className="bg-blue-600/20 text-blue-400 p-3 rounded-full h-fit border border-blue-500/30">
 
                       <Bot size={22}/>
 
@@ -232,23 +238,25 @@ export default function Chat() {
 
                   <div
 
-                    className={`max-w-lg p-4 rounded-2xl ${
+                    className={`max-w-lg p-4 rounded-2xl shadow-lg ${
                       
                       msg.sender==="user"
 
-                      ?"bg-blue-600 text-white"
+                      ?"bg-blue-600 text-white shadow-blue-900/20"
 
-                      :"bg-slate-800 text-slate-200"
+                      :"bg-slate-800/80 backdrop-blur text-slate-200 border border-slate-700/50"
 
                     }`}
 
                   >
 
-                    <div className="text-sm">
-                      <ReactMarkdown>{msg.text}</ReactMarkdown>
+                    <div className="text-sm prose prose-invert max-w-none">
+                      <ErrorBoundary fallback={<div className="text-red-400 bg-red-900/20 p-2 rounded">Failed to render message.</div>}>
+                        <ReactMarkdown>{msg.text}</ReactMarkdown>
+                      </ErrorBoundary>
                     </div>
 
-                    <p className="text-xs opacity-60 mt-2">
+                    <p className="text-xs opacity-60 mt-2 text-right">
                       {msg.time}
                     </p>
 
@@ -258,7 +266,7 @@ export default function Chat() {
 
                   {msg.sender==="user" && (
 
-                    <div className="bg-slate-700 p-3 rounded-full h-fit">
+                    <div className="bg-slate-700 text-slate-300 p-3 rounded-full h-fit border border-slate-600/50">
 
                       <User size={22}/>
 
@@ -268,21 +276,25 @@ export default function Chat() {
 
 
 
-                </div>
+                </motion.div>
 
 
               ))}
 
               {isTyping && (
-                <div className="flex gap-3 justify-start">
-                  <div className="bg-blue-600 p-3 rounded-full h-fit">
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex gap-3 justify-start"
+                >
+                  <div className="bg-blue-600/20 text-blue-400 p-3 rounded-full h-fit border border-blue-500/30">
                     <Bot size={22}/>
                   </div>
-                  <div className="max-w-lg p-4 rounded-2xl bg-slate-800 text-slate-200 flex items-center gap-2">
+                  <div className="max-w-lg p-4 rounded-2xl bg-slate-800/80 backdrop-blur border border-slate-700/50 text-slate-200 flex items-center gap-3 shadow-lg">
                     <Loader2 size={18} className="animate-spin text-cyan-400" />
                     <p className="text-sm opacity-80">AI is thinking...</p>
                   </div>
-                </div>
+                </motion.div>
               )}
 
               <div ref={chatEnd}/>
@@ -295,7 +307,7 @@ export default function Chat() {
 
 
 
-          <div className="border-t border-slate-800 p-4">
+          <div className="border-t border-slate-800/60 p-4 bg-slate-900/60 backdrop-blur-md relative z-10">
 
 
             <div className="flex flex-wrap gap-2 mb-4">

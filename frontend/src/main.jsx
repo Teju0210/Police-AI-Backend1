@@ -7,11 +7,14 @@ import "./index.css";
 import App from "./App.jsx";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
+import ErrorBoundary from "@/components/common/ErrorBoundary";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <TooltipProvider>
-      <App />
-    </TooltipProvider>
+    <ErrorBoundary>
+      <TooltipProvider>
+        <App />
+      </TooltipProvider>
+    </ErrorBoundary>
   </StrictMode>
 );
