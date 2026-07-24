@@ -9,7 +9,7 @@ import AnimatedGrid from "../components/common/AnimatedGrid";
 
 export default function DashboardLayout() {
   return (
-    <div className="relative flex min-h-screen overflow-hidden bg-[#070B17] text-white">
+    <div className="relative flex h-screen overflow-hidden bg-[#070B17] text-white">
 
       {/* Animated Background */}
       <AnimatedBackground />
