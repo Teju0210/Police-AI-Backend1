@@ -8,7 +8,6 @@ import Heatmap from "../pages/Heatmap/Heatmap";
 import Network from "../pages/Network/Network";
 import Reports from "../pages/Reports/Reports";
 import Analytics from "../pages/Analytics/Analytics";
-import Settings from "../pages/Settings/Settings";
 
 // Layout
 import DashboardLayout from "../layouts/DashboardLayout";
@@ -81,12 +80,6 @@ export default function AppRoutes() {
           <Route
             path="/analytics"
             element={<Analytics />}
-          />
-
-
-          <Route
-            path="/settings"
-            element={<Settings />}
           />
 
 

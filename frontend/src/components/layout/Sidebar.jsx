@@ -45,11 +45,6 @@ const menuItems = [
     icon: BarChart3,
     path: "/analytics",
   },
-  {
-    name: "Settings",
-    icon: Settings,
-    path: "/settings",
-  },
 ];
 
 export default function Sidebar() {
