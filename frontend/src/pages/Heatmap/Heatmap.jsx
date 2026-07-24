@@ -66,7 +66,7 @@ export default function Heatmap() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch("http://localhost:8000/api/dashboard/heatmap");
+        const res = await fetch("http://localhost:8000/dashboard/heatmap");
         const data = await res.json();
         if (data.crimes) {
           setCrimes(data.crimes);
