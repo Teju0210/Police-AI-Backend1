@@ -31,7 +31,7 @@ export default function Network(){
   useEffect(() => {
     async function fetchNetwork() {
       try {
-        const res = await fetch("http://localhost:8000/dashboard/network");
+        const res = await fetch("/server/AppSail/dashboard/network");
         const data = await res.json();
         
         if (data.nodes && data.edges) {
