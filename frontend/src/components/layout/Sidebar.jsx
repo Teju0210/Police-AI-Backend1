@@ -7,6 +7,8 @@ import {
   Shield,
   BarChart3,
   Settings,
+  Cpu,
+  Activity
 } from "lucide-react";
 
 import { NavLink } from "react-router-dom";
@@ -62,120 +64,134 @@ export default function Sidebar() {
         h-screen
         overflow-hidden
         border-r
-        border-cyan-500/20
-        bg-white/5
+        border-slate-800
+        bg-slate-950/60
         backdrop-blur-2xl
+        flex
+        flex-col
       "
     >
       {/* Background Glow */}
-      <div className="absolute inset-0">
-
-        <div className="absolute -top-20 -left-20 h-60 w-60 rounded-full bg-cyan-500/20 blur-[120px]" />
-
-        <div className="absolute bottom-0 right-0 h-60 w-60 rounded-full bg-blue-600/20 blur-[120px]" />
-
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute -top-32 -left-32 h-72 w-72 rounded-full bg-cyan-600/10 blur-[120px]" />
+        <div className="absolute bottom-0 right-0 h-64 w-64 rounded-full bg-blue-700/10 blur-[120px]" />
       </div>
 
-      {/* Logo */}
-      <div className="relative z-10 flex items-center gap-4 border-b border-white/10 p-6">
-
-        <motion.div
-          whileHover={{
-            rotate: 10,
-            scale: 1.1,
-          }}
-          className="
-            rounded-2xl
-            bg-linear-to-br
-            from-cyan-500
-            to-blue-600
-            p-3
-            shadow-[0_0_25px_rgba(34,211,238,0.5)]
-          "
-        >
-          <Shield className="text-white" size={26} />
-        </motion.div>
+      {/* Logo Area */}
+      <div className="relative z-10 flex items-center gap-4 border-b border-slate-800/60 p-6 pt-8">
+        <div className="relative flex items-center justify-center h-14 w-14">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+            className="absolute inset-0 rounded-full border border-dashed border-cyan-500/40"
+          />
+          <motion.div
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            className="
+              relative
+              z-10
+              rounded-xl
+              bg-gradient-to-br
+              from-cyan-500
+              to-blue-700
+              p-2.5
+              shadow-[0_0_20px_rgba(34,211,238,0.4)]
+            "
+          >
+            <Shield className="text-white" size={24} />
+          </motion.div>
+        </div>
 
         <div>
-          <h1 className="text-xl font-bold tracking-wide text-white">
+          <h1 className="text-xl font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300">
             CrimeVision AI
           </h1>
-
-          <p className="text-xs text-slate-400">
-            Karnataka Police
+          <p className="text-[11px] uppercase tracking-widest text-cyan-500 font-semibold mt-0.5">
+            Intelligence Platform
           </p>
         </div>
-
       </div>
 
-      {/* Menu */}
-      <nav className="relative z-10 flex-1 p-4">
+      {/* Navigation Menu */}
+      <nav className="relative z-10 flex-1 overflow-y-auto px-4 py-6 scrollbar-hide">
+        <div className="space-y-1.5">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
 
-        {menuItems.map((item) => {
-          const Icon = item.icon;
+            return (
+              <NavLink key={item.name} to={item.path}>
+                {({ isActive }) => (
+                  <motion.div
+                    whileHover={{ x: 6 }}
+                    whileTap={{ scale: 0.97 }}
+                    className={`
+                      relative
+                      flex
+                      items-center
+                      gap-4
+                      rounded-xl
+                      px-4
+                      py-3.5
+                      transition-all
+                      duration-300
+                      group
+                      overflow-hidden
+                      ${
+                        isActive
+                          ? "bg-gradient-to-r from-cyan-500/10 to-transparent text-white"
+                          : "text-slate-400 hover:bg-white/5 hover:text-slate-200"
+                      }
+                    `}
+                  >
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeBar"
+                        className="absolute left-0 top-0 bottom-0 w-1 bg-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.8)]"
+                      />
+                    )}
 
-          return (
-            <NavLink key={item.name} to={item.path}>
-              {({ isActive }) => (
-                <motion.div
-                  whileHover={{
-                    x: 8,
-                    scale: 1.02,
-                  }}
-                  whileTap={{
-                    scale: 0.98,
-                  }}
-                  className={`
-                    mb-3
-                    flex
-                    items-center
-                    gap-4
-                    rounded-2xl
-                    px-4
-                    py-3
-                    transition-all
-                    duration-300
-
-                    ${
-                      isActive
-                        ? "border border-cyan-500/30 bg-cyan-500/15 text-cyan-300 shadow-[0_0_25px_rgba(34,211,238,0.25)]"
-                        : "text-slate-300 hover:bg-white/10 hover:text-white"
-                    }
-                  `}
-                >
-                  <Icon size={20} />
-
-                  <span className="font-medium">
-                    {item.name}
-                  </span>
-
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeIndicator"
-                      className="ml-auto h-2 w-2 rounded-full bg-cyan-400"
+                    <Icon 
+                      size={20} 
+                      className={`transition-colors duration-300 ${isActive ? "text-cyan-400" : "group-hover:text-cyan-400/70"}`} 
                     />
-                  )}
-                </motion.div>
-              )}
-            </NavLink>
-          );
-        })}
 
+                    <span className={`font-medium text-sm tracking-wide ${isActive ? "font-semibold" : ""}`}>
+                      {item.name}
+                    </span>
+                  </motion.div>
+                )}
+              </NavLink>
+            );
+          })}
+        </div>
       </nav>
 
-      {/* Footer */}
-      <div className="relative z-10 border-t border-white/10 p-5">
-
-        <div className="flex items-center gap-3">
-
-          <div className="h-3 w-3 rounded-full bg-green-400 animate-pulse" />
-
-          <span className="text-sm text-slate-300">
-            AI System Online
+      {/* System Status Footer */}
+      <div className="relative z-10 border-t border-slate-800/60 bg-slate-900/30 p-5 mt-auto">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)] animate-pulse" />
+          <span className="text-xs uppercase tracking-wider font-semibold text-slate-300">
+            System Online
           </span>
-
         </div>
 
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-slate-400">
+              <Cpu size={14} />
+              <span className="text-xs">AI Core</span>
+            </div>
+            <span className="text-xs font-mono text-cyan-400">34%</span>
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-slate-400">
+              <Activity size={14} />
+              <span className="text-xs">Database</span>
+            </div>
+            <span className="text-xs font-mono text-cyan-400">Stable</span>
+          </div>
+        </div>
       </div>
     </motion.aside>
   );
