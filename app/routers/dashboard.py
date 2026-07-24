@@ -222,3 +222,26 @@ def get_criminal_network(db: Session = Depends(get_db)):
         
     return {"nodes": nodes, "edges": edges}
 
+@router.get("/latest-report")
+def get_latest_report(db: Session = Depends(get_db)):
+    # Fetch the single most recent FIR from the database based on ID
+    latest_fir = db.query(FIR).order_by(FIR.id.desc()).first()
+    
+    if not latest_fir:
+        raise HTTPException(status_code=404, detail="No FIRs found in the database")
+        
+    return {
+        "fir_number": latest_fir.fir_number or "Unknown",
+        "date": latest_fir.incident_date.strftime("%d %B %Y") if latest_fir.incident_date else "Unknown",
+        "officer": "Officer " + str(latest_fir.police_station_id or "001"),
+        "priority": "HIGH" if latest_fir.gravity_offence and "heinous" in latest_fir.gravity_offence.lower() else "MEDIUM",
+        "location": latest_fir.location or "Unknown District",
+        "type": latest_fir.case_category or "Unknown Crime Type",
+        "suspect": "Unknown Suspect (Pending Investigation)",
+        "status": latest_fir.status or "Open",
+        "evidence_count": (latest_fir.id % 5) + 2, # Mocking evidence count based on ID
+        "witness_count": (latest_fir.id % 3) + 1,  # Mocking witness count
+        "ai_confidence": 85 + (latest_fir.id % 15) # Mocking confidence score 85-99
+    }
+
+
