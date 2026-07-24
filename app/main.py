@@ -15,6 +15,7 @@ from app.models.evidence import Evidence
 from app.models.investigation_status import InvestigationStatus
 from app.models.arrest_surrender import ArrestSurrender
 from app.routers import reports
+from app.routers import dashboard
 
 # Routers
 from app.routers.user import router as user_router
@@ -55,6 +56,7 @@ app.include_router(police_station_router)
 app.include_router(investigation_status_router)
 app.include_router(crime_type_router)
 app.include_router(reports.router)
+app.include_router(dashboard.router)
 app.include_router(ai_router)
 @app.get("/")
 def home():
