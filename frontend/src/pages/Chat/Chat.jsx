@@ -152,13 +152,11 @@ export default function Chat() {
 
   const suggestions=[
 
-    "Show recent crime trends",
+    "Tell me about the Bidar theft case",
 
-    "Find suspect connections",
+    "Compare the Hassan and Bangalore cases",
 
-    "Analyze FIR report",
-
-    "Predict crime hotspots",
+    "Are there any assault cases in Bangalore?",
 
     "/fir "
 
