@@ -39,7 +39,7 @@ const menuItems = [
     path: "/reports",
   },
   {
-    name: "Analytics",
+    name: "AI Risk Predictor",
     icon: BarChart3,
     path: "/analytics",
   },
