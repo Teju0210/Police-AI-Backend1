@@ -3,6 +3,7 @@ import {
   Search,
   UserCircle,
   Moon,
+  Sun,
   X,
 } from "lucide-react";
 
@@ -16,6 +17,16 @@ export default function Navbar() {
 
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
+  const [isLightMode, setIsLightMode] = useState(false);
+
+  const toggleLightMode = () => {
+    if (isLightMode) {
+      document.documentElement.classList.remove("light-mode");
+    } else {
+      document.documentElement.classList.add("light-mode");
+    }
+    setIsLightMode(!isLightMode);
+  };
 
 
   const officerName =
@@ -303,23 +314,19 @@ text-green-400
 
 
 {/* DARK MODE */}
-
 <button
-
-className="
-p-3
-rounded-xl
-bg-white/5
-border
-border-white/10
-hover:bg-blue-500/20
-transition
-"
-
+  onClick={toggleLightMode}
+  className="
+    p-3
+    rounded-xl
+    bg-white/5
+    border
+    border-white/10
+    hover:bg-blue-500/20
+    transition
+  "
 >
-
-<Moon size={22}/>
-
+  {isLightMode ? <Sun size={22}/> : <Moon size={22}/>}
 </button>
 
 
