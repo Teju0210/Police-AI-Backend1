@@ -64,9 +64,9 @@ export default function Sidebar() {
         h-screen
         overflow-hidden
         border-r
-        border-slate-800
-        bg-slate-950/60
-        backdrop-blur-2xl
+        border-white/10
+        bg-[#111827]/70
+        backdrop-blur-xl
         flex
         flex-col
       "
@@ -78,7 +78,7 @@ export default function Sidebar() {
       </div>
 
       {/* Logo Area */}
-      <div className="relative z-10 flex items-center gap-4 border-b border-slate-800/60 p-6 pt-8">
+      <div className="relative z-10 flex items-center gap-4 border-b border-white/10 p-6 pt-8">
         <div className="relative flex items-center justify-center h-14 w-14">
           <motion.div
             animate={{ rotate: 360 }}
@@ -167,7 +167,7 @@ export default function Sidebar() {
       </nav>
 
       {/* System Status Footer */}
-      <div className="relative z-10 border-t border-slate-800/60 bg-slate-900/30 p-5 mt-auto">
+      <div className="relative z-10 border-t border-white/10 bg-slate-900/30 p-5 mt-auto">
         <div className="flex items-center gap-2 mb-4">
           <div className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)] animate-pulse" />
           <span className="text-xs uppercase tracking-wider font-semibold text-slate-300">
