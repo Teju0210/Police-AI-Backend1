@@ -145,3 +145,68 @@ def get_heatmap_data(db: Session = Depends(get_db)):
         })
         
     return {"crimes": result}
+
+@router.get("/network")
+def get_criminal_network(db: Session = Depends(get_db)):
+    # Fetch 3 real high-severity FIRs to anchor the graph
+    firs = db.query(FIR).filter(
+        FIR.gravity_offence.ilike("%heinous%")
+    ).limit(3).all()
+    
+    if not firs:
+        firs = db.query(FIR).limit(3).all()
+        
+    nodes = []
+    edges = []
+    
+    # Create the central suspect
+    suspect_id = "suspect_1"
+    nodes.append({
+        "id": suspect_id,
+        "position": {"x": 400, "y": 300},
+        "data": {"label": "Primary Suspect\n(Repeat Offender)", "type": "suspect"},
+        "style": {"background": "#dc2626", "color": "white", "borderRadius": "12px", "padding": "12px", "border": "2px solid #ef4444"}
+    })
+    
+    # Map the real FIRs around the suspect
+    positions = [{"x": 100, "y": 100}, {"x": 700, "y": 100}, {"x": 400, "y": 550}]
+    
+    for i, fir in enumerate(firs):
+        fir_id = f"fir_{fir.id}"
+        pos = positions[i % len(positions)]
+        
+        # Add FIR Node
+        nodes.append({
+            "id": fir_id,
+            "position": pos,
+            "data": {"label": f"FIR: {fir.fir_number}\n{fir.location}\n{fir.case_category}", "type": "fir"},
+            "style": {"background": "#1e293b", "color": "white", "borderRadius": "12px", "padding": "12px"}
+        })
+        
+        # Add Edge
+        edges.append({
+            "id": f"e_{suspect_id}_{fir_id}",
+            "source": suspect_id,
+            "target": fir_id,
+            "label": "Involved in",
+            "animated": True
+        })
+        
+        # Add a mock Evidence node for each FIR
+        ev_id = f"ev_{fir.id}"
+        nodes.append({
+            "id": ev_id,
+            "position": {"x": pos["x"] - 50, "y": pos["y"] + 150},
+            "data": {"label": f"Evidence Logs\n({fir.id})", "type": "evidence"},
+            "style": {"background": "#16a34a", "color": "white", "borderRadius": "12px", "padding": "12px"}
+        })
+        
+        edges.append({
+            "id": f"e_{fir_id}_{ev_id}",
+            "source": fir_id,
+            "target": ev_id,
+            "label": "Recovered"
+        })
+        
+    return {"nodes": nodes, "edges": edges}
+

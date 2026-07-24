@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import ReactFlow, {
   Background,
   Controls,
@@ -22,125 +23,48 @@ import {
 } from "lucide-react";
 
 
-const nodes = [
-
-  {
-    id: "1",
-    position: { x: 300, y: 50 },
-    data: {
-      label: (
-        <div>
-          <b>Rahul Kumar</b>
-          <br />
-          <span>Primary Suspect</span>
-        </div>
-      ),
-    },
-    style: {
-      background:"#dc2626",
-      color:"white",
-      borderRadius:"12px",
-      padding:"12px",
-      border:"2px solid #ef4444",
-    },
-  },
-
-
-  {
-    id:"2",
-    position:{x:100,y:200},
-    data:{
-      label:(
-        <div>
-          <b>Arjun Singh</b>
-          <br/>
-          Associate
-        </div>
-      )
-    },
-    style:{
-      background:"#1e293b",
-      color:"white",
-      borderRadius:"12px",
-      padding:"12px",
-    },
-  },
-
-
-  {
-    id:"3",
-    position:{x:500,y:200},
-    data:{
-      label:(
-        <div>
-          <b>Gang Alpha</b>
-          <br/>
-          Organization
-        </div>
-      )
-    },
-    style:{
-      background:"#2563eb",
-      color:"white",
-      borderRadius:"12px",
-      padding:"12px",
-    },
-  },
-
-
-  {
-    id:"4",
-    position:{x:300,y:350},
-    data:{
-      label:(
-        <div>
-          <b>Vehicle Owner</b>
-          <br/>
-          Evidence Link
-        </div>
-      )
-    },
-    style:{
-      background:"#16a34a",
-      color:"white",
-      borderRadius:"12px",
-      padding:"12px",
-    },
-  },
-
-
-];
-
-
-const edges = [
-
-  {
-    id:"e1-2",
-    source:"1",
-    target:"2",
-    label:"Contact",
-    animated:true,
-  },
-
-  {
-    id:"e1-3",
-    source:"1",
-    target:"3",
-    label:"Member",
-    animated:true,
-  },
-
-  {
-    id:"e1-4",
-    source:"1",
-    target:"4",
-    label:"Evidence",
-  },
-
-];
-
-
 export default function Network(){
+  const [nodes, setNodes] = useState([]);
+  const [edges, setEdges] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchNetwork() {
+      try {
+        const res = await fetch("http://localhost:8000/dashboard/network");
+        const data = await res.json();
+        
+        if (data.nodes && data.edges) {
+          // ReactFlow requires labels inside data to be strings or React nodes.
+          // Since we sent strings with \n from the backend, we convert them to simple HTML to render multiline
+          const formattedNodes = data.nodes.map(n => ({
+            ...n,
+            data: {
+              ...n.data,
+              label: (
+                <div style={{ textAlign: "center" }}>
+                  {n.data.label.split('\n').map((line, i) => (
+                    <div key={i} style={i === 0 ? { fontWeight: "bold", marginBottom: "4px" } : { fontSize: "11px" }}>
+                      {line}
+                    </div>
+                  ))}
+                </div>
+              )
+            }
+          }));
+          
+          setNodes(formattedNodes);
+          setEdges(data.edges);
+        }
+      } catch (err) {
+        console.error("Failed to fetch criminal network:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchNetwork();
+  }, []);
+
 
   return(
 
