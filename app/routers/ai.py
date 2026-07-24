@@ -65,7 +65,14 @@ def draft_fir(request: FIRRequest):
     try:
         prompt = f"Convert the following raw summary into a professional legal FIR (First Information Report) draft. Structure it properly with necessary legal headings and formal language.\n\nSummary:\n{request.raw_summary}"
         response = rag_engine.llm.invoke(prompt)
-        return {"response": str(response.content)}
+        
+        # Handle Gemini 3.1 Flash Lite list output format
+        if isinstance(response.content, list):
+            text_response = response.content[0].get("text", str(response.content))
+        else:
+            text_response = str(response.content)
+            
+        return {"response": text_response}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

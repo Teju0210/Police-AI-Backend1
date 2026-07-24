@@ -27,8 +27,9 @@ class RAGEngine:
 
         self.vector_store = None
         self.retriever = None
+        self.data_path = "data/police_briefs.txt"
 
-    def ingest_text_files(self, data_path="backend/data"):
+    def ingest_text_files(self, data_path="data"):
         loader = DirectoryLoader(
             data_path,
             glob="**/*.txt",

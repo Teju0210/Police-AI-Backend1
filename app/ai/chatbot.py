@@ -39,7 +39,10 @@ Answer:"""
             "question": user_input
         })
         
-        # Update internal chat history
-        self.chat_history += f"User: {user_input}\nAssistant: {response}\n"
+        # Cast TextAccessor to a raw string
+        text_response = str(response)
         
-        return response
+        # Update internal chat history
+        self.chat_history += f"User: {user_input}\nAssistant: {text_response}\n"
+        
+        return text_response
