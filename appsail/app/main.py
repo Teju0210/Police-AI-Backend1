@@ -76,3 +76,10 @@ def startup_event():
         logger.info("Successfully ingested case files into RAG memory!")
     except Exception as e:
         logger.error(f"Failed to ingest RAG documents: {e}")
+
+if __name__ == "__main__":
+    import os
+    import uvicorn
+    # Catalyst injects a dynamic port to listen on.
+    port = int(os.environ.get("X_ZOHO_CATALYST_LISTEN_PORT", 8000))
+    uvicorn.run("app.main:app", host="0.0.0.0", port=port)
