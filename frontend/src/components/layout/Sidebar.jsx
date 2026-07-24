@@ -29,7 +29,7 @@ const menuItems = [
     path: "/heatmap",
   },
   {
-    name: "Criminal Network",
+    name: "Repeated Offenders",
     icon: Network,
     path: "/network",
   },

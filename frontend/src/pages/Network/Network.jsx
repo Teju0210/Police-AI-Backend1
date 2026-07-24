@@ -77,7 +77,7 @@ export default function Network(){
 
           <NetworkIcon className="text-blue-500"/>
 
-          Criminal Network Visualization
+          Repeated Offenders Visualization
 
         </h1>
 
