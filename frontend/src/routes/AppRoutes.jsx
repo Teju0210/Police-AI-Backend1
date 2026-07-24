@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 
 // Pages
 import Login from "../pages/Login/Login";
@@ -20,7 +20,7 @@ export default function AppRoutes() {
 
   return (
 
-    <BrowserRouter>
+    <HashRouter>
 
       <Routes>
 
@@ -89,7 +89,7 @@ export default function AppRoutes() {
       </Routes>
 
 
-    </BrowserRouter>
+    </HashRouter>
 
   );
 }
