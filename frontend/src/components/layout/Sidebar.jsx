@@ -78,8 +78,8 @@ export default function Sidebar() {
       </div>
 
       {/* Logo Area */}
-      <div className="relative z-10 flex items-center gap-4 border-b border-white/10 p-6 pt-8">
-        <div className="relative flex items-center justify-center h-14 w-14">
+      <div className="relative z-10 flex h-20 items-center gap-4 border-b border-white/10 px-6">
+        <div className="relative flex items-center justify-center h-12 w-12">
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
@@ -94,19 +94,19 @@ export default function Sidebar() {
               bg-gradient-to-br
               from-cyan-500
               to-blue-700
-              p-2.5
+              p-2
               shadow-[0_0_20px_rgba(34,211,238,0.4)]
             "
           >
-            <Shield className="text-white" size={24} />
+            <Shield className="text-white" size={20} />
           </motion.div>
         </div>
 
         <div>
-          <h1 className="text-xl font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300">
+          <h1 className="text-lg font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300">
             CrimeVision AI
           </h1>
-          <p className="text-[11px] uppercase tracking-widest text-cyan-500 font-semibold mt-0.5">
+          <p className="text-[10px] uppercase tracking-widest text-cyan-500 font-semibold mt-0.5">
             Intelligence Platform
           </p>
         </div>
