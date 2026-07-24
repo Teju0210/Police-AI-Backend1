@@ -146,41 +146,50 @@ def get_heatmap_data(db: Session = Depends(get_db)):
         
     return {"crimes": result}
 
+import math
+
 @router.get("/network")
 def get_criminal_network(db: Session = Depends(get_db)):
-    # Fetch 3 real high-severity FIRs to anchor the graph
+    # Fetch 30 real high-severity FIRs to anchor the graph
+    num_cases = 30
     firs = db.query(FIR).filter(
         FIR.gravity_offence.ilike("%heinous%")
-    ).limit(3).all()
+    ).limit(num_cases).all()
     
     if not firs:
-        firs = db.query(FIR).limit(3).all()
+        firs = db.query(FIR).limit(num_cases).all()
         
     nodes = []
     edges = []
     
     # Create the central suspect
     suspect_id = "suspect_1"
+    center_x, center_y = 600, 500
+    
     nodes.append({
         "id": suspect_id,
-        "position": {"x": 400, "y": 300},
+        "position": {"x": center_x, "y": center_y},
         "data": {"label": "Primary Suspect\n(Repeat Offender)", "type": "suspect"},
-        "style": {"background": "#dc2626", "color": "white", "borderRadius": "12px", "padding": "12px", "border": "2px solid #ef4444"}
+        "style": {"background": "#dc2626", "color": "white", "borderRadius": "12px", "padding": "12px", "border": "2px solid #ef4444", "zIndex": 10}
     })
     
-    # Map the real FIRs around the suspect
-    positions = [{"x": 100, "y": 100}, {"x": 700, "y": 100}, {"x": 400, "y": 550}]
+    # Map the real FIRs around the suspect in a massive circle
+    radius = 450
     
     for i, fir in enumerate(firs):
         fir_id = f"fir_{fir.id}"
-        pos = positions[i % len(positions)]
+        
+        # Calculate circular position
+        angle = i * (2 * math.pi / len(firs))
+        pos_x = center_x + radius * math.cos(angle)
+        pos_y = center_y + radius * math.sin(angle)
         
         # Add FIR Node
         nodes.append({
             "id": fir_id,
-            "position": pos,
+            "position": {"x": pos_x, "y": pos_y},
             "data": {"label": f"FIR: {fir.fir_number}\n{fir.location}\n{fir.case_category}", "type": "fir"},
-            "style": {"background": "#1e293b", "color": "white", "borderRadius": "12px", "padding": "12px"}
+            "style": {"background": "#1e293b", "color": "white", "borderRadius": "12px", "padding": "12px", "fontSize": "10px", "width": 150}
         })
         
         # Add Edge
@@ -188,24 +197,27 @@ def get_criminal_network(db: Session = Depends(get_db)):
             "id": f"e_{suspect_id}_{fir_id}",
             "source": suspect_id,
             "target": fir_id,
-            "label": "Involved in",
-            "animated": True
+            "animated": True,
+            "style": {"stroke": "#ef4444", "strokeWidth": 1.5, "opacity": 0.5}
         })
         
-        # Add a mock Evidence node for each FIR
+        # Add a mock Evidence node for each FIR slightly offset outwards
         ev_id = f"ev_{fir.id}"
+        ev_x = center_x + (radius + 150) * math.cos(angle)
+        ev_y = center_y + (radius + 150) * math.sin(angle)
+        
         nodes.append({
             "id": ev_id,
-            "position": {"x": pos["x"] - 50, "y": pos["y"] + 150},
-            "data": {"label": f"Evidence Logs\n({fir.id})", "type": "evidence"},
-            "style": {"background": "#16a34a", "color": "white", "borderRadius": "12px", "padding": "12px"}
+            "position": {"x": ev_x, "y": ev_y},
+            "data": {"label": f"Evidence\n({fir.id})", "type": "evidence"},
+            "style": {"background": "#16a34a", "color": "white", "borderRadius": "12px", "padding": "8px", "fontSize": "9px"}
         })
         
         edges.append({
             "id": f"e_{fir_id}_{ev_id}",
             "source": fir_id,
             "target": ev_id,
-            "label": "Recovered"
+            "style": {"stroke": "#16a34a", "opacity": 0.3}
         })
         
     return {"nodes": nodes, "edges": edges}
