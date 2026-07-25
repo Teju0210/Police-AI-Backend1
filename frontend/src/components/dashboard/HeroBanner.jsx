@@ -84,16 +84,14 @@ export default function HeroBanner() {
             <div>
 
               <Badge className="mb-4 bg-cyan-600 hover:bg-cyan-500">
-                🚔 CrimeVision AI
+                🚔 CrimeVision Analytics
               </Badge>
 
               <h1 className="text-4xl font-extrabold text-white">
                 Welcome, {officer} 👮
               </h1>
 
-              <p className="mt-3 text-lg text-slate-300">
-                Karnataka Police Crime Analytics
-              </p>
+
 
               <p className="mt-2 text-slate-400">
                 {today}

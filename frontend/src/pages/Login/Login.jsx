@@ -34,12 +34,10 @@ export default function Login() {
         </div>
 
         <h1 className="text-3xl font-bold text-white text-center">
-          CrimeVision AI
+          CrimeVision Analytics
         </h1>
 
-        <p className="text-center text-slate-400 mt-2">
-          Karnataka Police Crime Analytics
-        </p>
+
 
         <form onSubmit={handleLogin} className="mt-8 space-y-5">
 

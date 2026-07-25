@@ -37,7 +37,7 @@ export default function Chat() {
   const [messages, setMessages] = useState([
     {
       sender:"ai",
-      text:"Hello Officer. I am CrimeVision AI. How can I assist with your investigation today?",
+      text:"Hello Officer. I am CrimeVision Analytics. How can I assist with your investigation today?",
       time:"Now",
     },
   ]);
@@ -175,7 +175,7 @@ export default function Chat() {
 
           <Bot className="text-blue-500" size={36} />
 
-          CrimeVision AI Assistant
+          CrimeVision Analytics Assistant
 
         </h1>
 
@@ -366,7 +366,7 @@ export default function Chat() {
 
                 }}
 
-                placeholder="Ask CrimeVision AI..."
+                placeholder="Ask CrimeVision Analytics..."
 
                 className="
                 flex-1

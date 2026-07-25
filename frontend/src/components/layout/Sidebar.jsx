@@ -98,12 +98,9 @@ export default function Sidebar() {
         </div>
 
         <div>
-          <h1 className="text-lg font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300">
-            CrimeVision AI
+          <h1 className="text-xl font-bold tracking-tight text-white flex items-center">
+            CrimeVision Analytics
           </h1>
-          <p className="text-[10px] uppercase tracking-widest text-cyan-500 font-semibold mt-0.5">
-            Crime Analytics
-          </p>
         </div>
       </div>
 
