@@ -44,7 +44,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-Base.metadata.create_all(bind=engine)
+# Base.metadata.create_all(bind=engine) # Disabled for read-only serverless environment
 
 app.include_router(user_router)
 app.include_router(auth_router)
@@ -67,15 +67,15 @@ def home():
 from app.routers.ai import rag_engine
 import logging
 
-@app.on_event("startup")
-def startup_event():
-    logger = logging.getLogger(__name__)
-    logger.info("Ingesting text files into RAG FAISS Vector Store...")
-    try:
-        rag_engine.ingest_text_files("data")
-        logger.info("Successfully ingested case files into RAG memory!")
-    except Exception as e:
-        logger.error(f"Failed to ingest RAG documents: {e}")
+# @app.on_event("startup")
+# def startup_event():
+#     logger = logging.getLogger(__name__)
+#     logger.info("Ingesting text files into RAG FAISS Vector Store...")
+#     try:
+#         rag_engine.ingest_text_files("data")
+#         logger.info("Successfully ingested case files into RAG memory!")
+#     except Exception as e:
+#         logger.error(f"Failed to ingest RAG documents: {e}")
 
 if __name__ == "__main__":
     import os

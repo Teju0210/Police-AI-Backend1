@@ -32,7 +32,7 @@ export const downloadReport = () => {
   pdf.setFontSize(11);
 
   pdf.text(
-    "Karnataka Police Intelligence Platform",
+    "Karnataka Police Crime Analytics",
     15,
     23
   );

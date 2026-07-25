@@ -51,3 +51,4 @@ pandas
 numpy
 joblib
 
+langchain-text-splitters

@@ -119,7 +119,7 @@ def process_voice(file: UploadFile = File(...)):
     # In a real app, save the file temporarily and pass to whisper
     # Here we simulate the process
     try:
-        temp_path = f"temp_{file.filename}"
+        temp_path = f"/tmp/temp_{file.filename}"
         with open(temp_path, "wb") as f:
             f.write(file.file.read())
             

@@ -1,8 +1,14 @@
 {
-	"command": "python -m app.main",
+	"command": "bash start.sh",
 	"build_path": "./",
 	"stack": "python_3_9",
-	"env_variables": {},
-	"memory": 256,
+	"env_variables": {
+		"DATABASE_URL": "sqlite:///./test.db",
+		"SECRET_KEY": "supersecretkey",
+		"ALGORITHM": "HS256",
+		"ACCESS_TOKEN_EXPIRE_MINUTES": "30",
+		"GEMINI_API_KEY": "INSERT_API_KEY_HERE"
+	},
+	"memory": 1024,
 	"scripts": {}
 }

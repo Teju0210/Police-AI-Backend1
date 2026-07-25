@@ -16,7 +16,7 @@ import { motion } from "framer-motion";
 
 const menuItems = [
   {
-    name: "Dashboard",
+    name: "Analytics",
     icon: LayoutDashboard,
     path: "/dashboard",
   },
@@ -102,7 +102,7 @@ export default function Sidebar() {
             CrimeVision AI
           </h1>
           <p className="text-[10px] uppercase tracking-widest text-cyan-500 font-semibold mt-0.5">
-            Intelligence Platform
+            Crime Analytics
           </p>
         </div>
       </div>

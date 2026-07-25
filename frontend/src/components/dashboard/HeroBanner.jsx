@@ -92,7 +92,7 @@ export default function HeroBanner() {
               </h1>
 
               <p className="mt-3 text-lg text-slate-300">
-                Karnataka Police Intelligence Dashboard
+                Karnataka Police Crime Analytics
               </p>
 
               <p className="mt-2 text-slate-400">
